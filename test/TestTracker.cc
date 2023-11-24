@@ -7,7 +7,7 @@
  */
 #include "MotionModel.h"
 #include "Timer.h"
-#include "PyramidTracker.h"
+#include "Tracker.h"
 #include <opencv2/opencv.hpp>
 
 #include <iostream>

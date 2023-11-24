@@ -43,7 +43,7 @@ target_compile_options(${PROJECT_NAME}
 
 set(TEST_LIST
   TestHelloWorld
-  TestBitplanesTrackerPyramid
+  TestTracker
 )
 
 foreach (TEST ${TEST_LIST})

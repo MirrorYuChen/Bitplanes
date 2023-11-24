@@ -124,14 +124,14 @@ float ChannelDataSampler<M>::DoLinearize(const cv::Mat &Iw, Gradient &g) const {
       const auto c = *c0_ptr++;
 
       Eigen::Matrix<float, 8, 1> err;
-      err[0] = (p0[-1] > *p) - ((c & (1 << 0)) >> 0);
-      err[1] = (p0[0] > *p) - ((c & (1 << 1)) >> 1);
-      err[2] = (p0[1] > *p) - ((c & (1 << 2)) >> 2);
-      err[3] = (p[-1] > *p) - ((c & (1 << 3)) >> 3);
-      err[4] = (p[0] > *p) - ((c & (1 << 4)) >> 4);
-      err[5] = (p1[-1] > *p) - ((c & (1 << 5)) >> 5);
-      err[6] = (p1[0] > *p) - ((c & (1 << 6)) >> 6);
-      err[7] = (p1[1] > *p) - ((c & (1 << 7)) >> 7);
+      err[0] = static_cast<float>((p0[-1] > *p) - ((c & (1 << 0)) >> 0));
+      err[1] = static_cast<float>((p0[0] > *p) - ((c & (1 << 1)) >> 1));
+      err[2] = static_cast<float>((p0[1] > *p) - ((c & (1 << 2)) >> 2));
+      err[3] = static_cast<float>((p[-1] > *p) - ((c & (1 << 3)) >> 3));
+      err[4] = static_cast<float>((p[0] > *p) - ((c & (1 << 4)) >> 4));
+      err[5] = static_cast<float>((p1[-1] > *p) - ((c & (1 << 5)) >> 5));
+      err[6] = static_cast<float>((p1[0] > *p) - ((c & (1 << 6)) >> 6));
+      err[7] = static_cast<float>((p1[1] > *p) - ((c & (1 << 7)) >> 7));
 
       g.noalias() += jacobian_.template block<8, 8>(i, 0) * err;
       ret += err.squaredNorm();

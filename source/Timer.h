@@ -42,7 +42,7 @@ public:
 
 protected:
   std::chrono::high_resolution_clock::time_point start_time_;
-}; // Timer
+};
 
 
 /**
@@ -62,6 +62,6 @@ double TimeCode(int N_rep, Func &&f, Args... args) {
   for (int i = 0; i < N_rep; ++i)
     f(args...);
   auto t = timer.stop();
-  return t.count() / (double) N_rep;
+  return static_cast<double>(t.count()) / (double) N_rep;
 }
 NAMESPACE_END

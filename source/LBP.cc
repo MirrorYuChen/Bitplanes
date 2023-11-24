@@ -22,8 +22,8 @@ void LBP(const cv::Mat &src, const cv::Rect &roi, cv::Mat &dst) {
 
   int src_stride = src.cols;
   for (int y = 0; y < roi.height; ++y) {
-    const uint8_t *srow = src.ptr<const uint8_t>(y + roi.y);
-    uint8_t *drow = dst.ptr<uint8_t>(y);
+    const auto *s_row = src.ptr<const uint8_t>(y + roi.y);
+    auto *d_row = dst.ptr<uint8_t>(y);
 
     /*
      *  P00 P01 P02
@@ -32,8 +32,8 @@ void LBP(const cv::Mat &src, const cv::Rect &roi, cv::Mat &dst) {
      */
     // 2.ROI每个像素对应LBP编码
     for (int x = 0; x < roi.width; ++x) {
-      const uint8_t *p = srow + x + roi.x;
-      drow[x] =
+      const uint8_t *p = s_row + x + roi.x;
+      d_row[x] =
         ((*(p - src_stride - 1) >= *p) << 0) |
         ((*(p - src_stride) >= *p) << 1) |
         ((*(p - src_stride + 1) >= *p) << 2) |
