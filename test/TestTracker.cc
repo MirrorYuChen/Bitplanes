@@ -16,7 +16,6 @@
 
 std::vector<cv::Mat> LoadData() {
   static const char *DATA_DIR = "../data/";
-
   std::vector<cv::Mat> ret(50);
   for (int i = 0; i < 50; ++i) {
     char fn[128];
@@ -24,7 +23,6 @@ std::vector<cv::Mat> LoadData() {
     ret[i] = cv::imread(fn, cv::IMREAD_GRAYSCALE);
     assert(!ret[i].empty());
   }
-
   return ret;
 }
 
@@ -35,24 +33,27 @@ static inline
 std::array<cv::Point2f, 4> RectToPoints(const cv::Rect &r, const float *H_ptr) {
   std::array<cv::Point2f, 4> ret;
   const Eigen::Matrix3f H = Eigen::Matrix3f::Map(H_ptr);
+  auto x1 = static_cast<float>(r.x);
+  auto y1 = static_cast<float>(r.y);
+  auto x2 = static_cast<float>(r.x + r.width);
+  auto y2 = static_cast<float>(r.y + r.height);
 
   Eigen::Vector3f p;
-  p = H * Eigen::Vector3f(r.x, r.y, 1.0);
+  p = H * Eigen::Vector3f(x1, y1, 1.0);
   p /= p[2];
   ret[0] = cv::Point2f(p.x(), p.y());
 
-  p = H * Eigen::Vector3f(r.x + r.width, r.y, 1.0);
+  p = H * Eigen::Vector3f(x2, y1, 1.0);
   p /= p[2];
   ret[1] = cv::Point2f(p.x(), p.y());
 
-  p = H * Eigen::Vector3f(r.x + r.width, r.y + r.height, 1.0);
+  p = H * Eigen::Vector3f(x2, y2, 1.0);
   p /= p[2];
   ret[2] = cv::Point2f(p.x(), p.y());
 
-  p = H * Eigen::Vector3f(r.x, r.y + r.height, 1.0);
+  p = H * Eigen::Vector3f(x1, y2, 1.0);
   p /= p[2];
   ret[3] = cv::Point2f(p.x(), p.y());
-
   return ret;
 }
 
@@ -92,22 +93,22 @@ int main() {
 
   PyramidTracker<Homography> tracker(params);
   tracker.setTemplate(images[0], bbox);
-  cv::Mat dimg;
+  cv::Mat dst_img;
   Matrix33f H(Matrix33f::Identity());
   double total_time = 0.0;
   for (size_t i = 1; i < images.size(); ++i) {
     Timer timer;
     auto result = tracker.Track(images[i], H);
-    total_time += timer.stop().count();
+    total_time += static_cast<double>(timer.stop().count());
     H = result.T;
 
-    DrawTrackingResult(dimg, images[i], bbox, H.data());
-    cv::imshow("bitplanes", dimg);
+    DrawTrackingResult(dst_img, images[i], bbox, H.data());
+    cv::imshow("result", dst_img);
     int k = 0xff & cv::waitKey(5);
     if (k == 'q') {
       break;
     }
   }
-  std::cout << "Runtime: " << images.size() / (total_time / 1000.0f) << " HZ.\n";
+  std::cout << "Runtime: " << static_cast<float>(images.size()) / (total_time / 1000.0f) << " HZ.\n";
   return 0;
 }
