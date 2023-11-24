@@ -11,6 +11,7 @@ find_package(OpenCV REQUIRED)
 include_directories(
   ${CMAKE_CURRENT_LIST_DIR}/include
   ${CMAKE_CURRENT_LIST_DIR}/source
+  ${CMAKE_CURRENT_LIST_DIR}/3rdLibs/circular_buffer
   ${OpenCV_INCLUDE_DIRS}
   D:/library/eigen
 )
@@ -24,7 +25,9 @@ file(GLOB_RECURSE SRC_FILES
 if (BUILD_SHARED_LIBS)
   add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
 else (BUILD_SHARED_LIBS)
-  add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
+  add_library(${PROJECT_NAME} STATIC ${SRC_FILES}
+    test/Demo.h
+    test/Demo.cc)
 endif (BUILD_SHARED_LIBS)
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 
@@ -44,6 +47,7 @@ target_compile_options(${PROJECT_NAME}
 set(TEST_LIST
   TestHelloWorld
   TestTracker
+  TestDemo
 )
 
 foreach (TEST ${TEST_LIST})
