@@ -12,6 +12,11 @@
 #include <Eigen/LU>
 
 NAMESPACE_BEGIN
+static cv::CLAHE *clahe() {
+  static cv::Ptr<cv::CLAHE> s_clahe = cv::createCLAHE(6.0, cv::Size(8, 8));
+  return s_clahe.get();
+}
+
 template<class M>
 Tracker<M>::Tracker(Parameters p)
   : params_(p), cdata_(p.subsampling), T_(Matrix33f::Identity()), T_inv_(Matrix33f::Identity()),
@@ -21,6 +26,7 @@ template<class M>
 void Tracker<M>::setTemplate(const cv::Mat &image, const cv::Rect &bbox) {
   // 1.设置模板图像，并进行高斯模糊
   image.copyTo(I_);
+  clahe()->apply(I_, I_);
   SmoothImage(I_, bbox);
 
   // 2.将矩阵设置为单位阵

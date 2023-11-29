@@ -68,6 +68,7 @@ protected:
    */
   void SmoothImage(cv::Mat &I, const cv::Rect &roi);
 
+
 protected:
   Parameters params_;              //< AlgorithmParameters
   ChannelDataType cdata_;          //< holds the multi-channel data
